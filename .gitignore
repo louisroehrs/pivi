@@ -1,0 +1,39 @@
+# temp
+
+
+# Emacs editor
+*.*~
+\#*.*#
+\.#*
+\#*#
+
+# Mac Finder
+.DS_Store
+.Thumbs_DB
+
+# Java build
+target
+/test-output
+#random stuff
+hacks
+
+#serverlogs
+log
+
+# IntelliJ
+.idea
+
+
+#UI
+/node_modules
+/.tmp
+/.sass-cache
+/bower_components
+
+config.codekit
+
+# big data
+demoassets
+/bin/
+selfsigned.crt
+/pividata

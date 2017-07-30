@@ -1,0 +1,140 @@
+<html>
+  <head>
+
+<meta name='apple-mobile-web-app-capable' content='YES' />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>PiVi Jukebox</title>
+    <script type="text/javascript" src="../js/jquery-1.6.2.js"></script>
+    <script  type="text/javascript" src="../js/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <style>
+      body { 
+          background-color:#ccc;
+          font-family: Calibri, arial, helvetica;
+      }
+
+      .header, .addfile {
+          font:bold 20px helvetica;
+          color: #333;
+          text-shadow: -1px -1px 1px #fff;
+      }
+
+      .addfile {
+          float:right;
+          margin-right:10px;
+      }
+
+      .list div {
+          background-color:#fff;
+          margin:4px;
+          min-height:40px;
+          padding:3px;
+          border-radius:5px;
+          -webkit-box-shadow: 0px 1px 2px #444;
+          box-shadow: 1px 1px 2px #444;
+     }
+
+      #np { 
+          position:fixed;
+          background-color:#ddd;
+          right:0px;
+          top:0px;
+          left:0px;
+          padding:3px;
+          -webkit-box-shadow: 0px 1px 1px #444;
+          box-shadow: 1px 1px 1px #444;
+      }
+      
+      #npshadow {
+          min-height:42px;
+      }
+
+      #stop, #edit { 
+          background-color: rgba( 255,255,255,0.5);
+          float:left;
+          margin:4px;
+          min-height:25px;
+          padding:3px;
+          border-radius:5px;
+      }
+
+      #edit {
+          float:right;
+      }
+
+      #playing { 
+          background-color: rgba( 243,243,200,0.5);
+          margin:4px;
+          font-size:11px;
+          min-height:25px;
+          padding:3px;
+          border-radius:5px;
+      }
+
+    </style>
+
+    <script type="text/javascript">
+
+      jQuery(document).ready( function() {
+          $ = jQuery;
+
+
+          function play(file) {
+              $.get("/play", {filename:file}, function (data) {
+                  var names = data.playing.split('/');
+//                  jQuery('#playing').html(names[0]+': ' + names[1].match(/.*?(?=-\S)/));
+                    jQuery('#playing').html( names[1].match(/.*?(?=-\S)/));
+              }
+              , "json");
+          }
+
+          function listVideos(videoListing,element) {
+              videoListing.forEach( function (directory) {
+                  $(element).append('<div class="addfile" dir="' + directory.directory + '">+</div><div class="header">' + directory.directory + '</div>');
+                  var category = $('<div class="list"></div>').appendTo($(element));
+                  directory.files.forEach( function(video) {
+                      videoTitle = video.match(/.*?(?=-\S)/);
+	              category.append("<div file=\"" + directory.directory +'/' +video + "\">" + videoTitle + "</div>");
+                  })
+              });
+              $('.list').click( function(e) {
+                  play($(e.srcElement).attr("file"));
+              });
+	  }          
+
+          function getListing() {
+              $.get("/dir", {},
+                  function (data) { 
+                      listVideos(data,"#videos")
+                  }, "json");
+          }
+
+	  getListing();
+
+           $('#stop').click( function(e) {
+                  play("stop");
+                  jQuery('#playing').html("");
+           });
+
+/*           function scrollDiv(element) {
+               element= '#playing';
+               $(element).css("left", $(element).css("left")-1);
+               if ($(element).css("left") < -200) {
+                  $(element).css("left", 0) 
+               }
+           }
+           setInterval(scrollDiv,200);
+*/
+
+	});
+
+
+    </script>
+  </head>
+  <body>
+    <div id='np'><div id="stop">Stop</div><div id="edit">Edit</div><div id='playing'> </div></div>
+    <div id='npshadow'></div>
+    <div id="videos"></div>
+  </body>
+  
+</html>
