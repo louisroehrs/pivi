@@ -8,8 +8,8 @@
 
     <title>PiVi Jukebox</title>
     <script type="text/javascript" src="../js/jquery-1.6.2.js"></script>
-    <script  type="text/javascript" src="../js/jquery-ui.js"></script>
-    <style>
+    <script  type="text/javascript" src="../js/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <!-- <style>
       body { 
           background-color:#ccc;
           font-family: Calibri, arial, helvetica;
@@ -62,6 +62,122 @@
           border-radius:5px;
       }
 
+    </style> -->
+
+    <style>
+      @font-face {
+	  font-family: Okuda;
+	  src: url("../fonts/okuda/Okuda.otf") format("opentype");
+      }
+      @font-face {
+          font-family:Okuda;
+	  font-face: bold;
+          src: url("../fonts/okuda/Okuda Bold.otf") format("opentype");
+      }
+      body { 
+          background-color:#000;
+          font-family: Okuda,  Calibri, arial, helvetica;
+	  font-size: 40px;
+      }
+
+      .header, .headerbutton, .footer, .lefter, .footertall,.headerblack {
+          color: #000;
+	  background-color: rgba(200,225,250,1);
+	  font-family: bold Okuda 25pt;
+          margin:4px;
+          height:50px;
+          padding:3px;
+	  padding-left:10px;
+          border-top-left-radius:20px;
+      }
+
+      .headerblack {
+	  background-color: black;
+	  color: rgba(186,171,98,1);
+      }
+
+      .lefter {
+	  float:left;
+	  width: 12px;
+	  height:46px;
+	  margin-top:0px;
+	  margin-right:10px;
+	  border-radius:0px;
+      }
+      .footer {
+          margin:4px;
+          height:20px;
+          padding:3px;
+	  padding-left:10px;
+	  margin-bottom:20px;
+          border-bottom-left-radius:20px;
+	  border-top-left-radius:0px;
+      }
+
+      .footertall {
+          border-bottom-left-radius:20px;
+	  border-top-left-radius:0px;
+      }	  
+
+      .headerbutton {
+          float:right;
+          margin-right:10px;
+	  margin-top:0px;
+	  height:30px;
+      }
+
+      .gap {
+	  background-color: rgba(0,0,0,1);
+          float:right;
+	  width:4px;
+          margin-right:4px;
+	  height:57px;
+      }
+
+      .item {
+	  color:#000;
+          background-color: rgba(100,150,250,1);
+          margin:4px;
+ 	  margin-left:40px;
+	  margin-right:40px;
+          min-height:40px;
+          padding:3px;
+	  padding-left:10px;
+          border-top-right-radius:10px;
+	  border-bottom-right-radius:10px;
+     }
+
+      #nowplaying { 
+          position:fixed;
+          background-color:#ddd;
+          right:0px;
+          top:0px;
+          left:0px;
+          padding:3px;
+          -webkit-box-shadow: 0px 1px 1px #444;
+          box-shadow: 1px 1px 1px #444;
+      }
+      
+      #npshadow {
+          min-height:42px;
+      }
+
+
+      #nowplaying { 
+          background-color:black;
+	  color:  rgba( 243,243,200,0.5);
+          margin:4px;
+          font-size:12px;
+          min-height:45px;
+          padding:3px;
+
+      }
+
+      #videos {
+	  margin-top: 30px;
+      }
+
+      
       #isplaying {
           display:none;
       }
@@ -72,21 +188,11 @@
           display:none;
       }
 
-      #edit {
-          float:right;
-      }
 
-      #playing { 
-          clear: both;
-          background-color: rgba( 243,243,200,0.5);
-          margin:4px;
-          font-size:20px;
-          min-height:20px;
-          padding:3px;
-          border-radius:5px;
-      }
 
-    </style>
+
+    </style>      
+
 
     <script type="text/javascript">
 
@@ -106,12 +212,13 @@
           function listVideos(videoListing,element) {
               $(element).empty();
               videoListing.forEach( function (directory) {
-                  $(element).append('<div class="addfile" dir="' + directory.directory + '">+</div><div class="header">' + directory.directory + '</div>');
+                  $(element).append('<div class="headerbutton" dir="' + directory.directory + '">ADD</div><div class="gap"></div><div class="header">' + directory.directory + '</div>');
                   var category = $('<div class="list"></div>').appendTo($(element));
                   directory.files.forEach( function(video) {
                       videoTitle = video.match(/.*?(?=-\S)/);
-	              category.append("<div file=\"" + directory.directory +'/' +video + "\">" + videoTitle + "</div>");
+	              category.append("<div class='lefter'></div><div class='item' file=\"" + directory.directory +'/' +video + "\">" + videoTitle + "</div>");
                   })
+		  $(element).append('<div class="footer"></div>');
               });
               $(element).append('<div class="addcategory" >Add category</div>');
               $('.list').click( function(e) {
@@ -213,18 +320,17 @@
     </script>
   </head>
   <body>
-    <div id='np'>
-      <div class="isplaying" id="stop">Stop</div>
-      <div class="isplaying"  id="pause">Pause</div>
-      <div id="rewind">Rewind</div>
-      <div id="forward">Forward</div>
-      <div class="ispaused" id="resume">Resume</div>
-      <div id="louder">+</div>
-      <div id="quieter">-</div>
-      <div id="edit">Edit</div>
-      <div id='playing'> </div>
-    </div>
-    <div id='npshadow'></div>
+
+    <div class='lefter'></div><div class='headerblack' id="playing"> now playing....</div>
+    <div class="headerbutton">EDIT</div>     <div class="gap"></div>
+    <div class="headerbutton" id="rewind">Rewind</div><div class="gap"></div>    
+    <div class="headerbutton isplaying"  id="pause">Pause</div><div class="gap isplaying"></div>
+    <div class="headerbutton isplaying" id="stop">STOP</div><div class="gap isplaying"></div>
+    <div class="headerbutton" id="forward">Forward</div><div class="gap"></div>
+    <div class="headerbutton ispaused" id="resume">Resume</div><div class="gap ispaused"></div>
+    <div class="headerbutton" id="louder">+</div><div class="gap"></div>
+    <div class="headerbutton" id="quieter">-</div><div class="gap"></div>
+    <div class="footertall"></div>
     <div id="videos"></div>
   </body>
   

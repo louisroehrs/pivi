@@ -1,6 +1,6 @@
 var createServer = require("http").createServer;
 var readFile = require("fs").readFile;
-var sys = require("sys");
+var util = require("util");
 var url = require("url");
 var DEBUG = true;
 
@@ -65,17 +65,17 @@ fu.staticHandler = function (filename) {
       return;
     }
 
-    sys.puts("loading " + filename + "...");
+    console.log("loading " + filename + "...");
     readFile(filename, function (err, data) {
       if (err) {
-        sys.puts("Error loading " + filename);
+        console.log("Error loading " + filename);
       } else {
         body = data;
         headers = { "Content-Type": content_type
                   , "Content-Length": body.length
                   };
         if (!DEBUG) headers["Cache-Control"] = "public";
-        sys.puts("static file " + filename + " loaded");
+        console.log("static file " + filename + " loaded");
         callback();
       }
     });
