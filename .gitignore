@@ -37,3 +37,7 @@ demoassets
 /bin/
 selfsigned.crt
 /pividata
+server/1
+server/nohup.out
+server/noode.out
+server/pivi.out

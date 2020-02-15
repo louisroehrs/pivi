@@ -1,3 +1,5 @@
+
+
 <html>
   <head>
 
@@ -6,14 +8,14 @@
 
     <title>PiVi Jukebox</title>
     <script type="text/javascript" src="../js/jquery-1.6.2.js"></script>
-    <script  type="text/javascript" src="../js/jquery-ui-1.11.4/jquery-ui.js"></script>
+    <script  type="text/javascript" src="../js/jquery-ui.js"></script>
     <style>
       body { 
           background-color:#ccc;
           font-family: Calibri, arial, helvetica;
       }
 
-      .header, .addfile {
+    .header, .addfile,.addcategory {
           font:bold 20px helvetica;
           color: #333;
           text-shadow: -1px -1px 1px #fff;
@@ -32,7 +34,9 @@
           border-radius:5px;
           -webkit-box-shadow: 0px 1px 2px #444;
           box-shadow: 1px 1px 2px #444;
-     }
+      }
+
+
 
       #np { 
           position:fixed;
@@ -46,16 +50,26 @@
       }
       
       #npshadow {
-          min-height:42px;
+          min-height:84px;
       }
 
-      #stop, #edit { 
+      #stop, #pause, #rewind, #forward, #resume, #louder, #quieter,  #edit { 
           background-color: rgba( 255,255,255,0.5);
           float:left;
           margin:4px;
-          min-height:25px;
+          min-height:20px;
           padding:3px;
           border-radius:5px;
+      }
+
+      #isplaying {
+          display:none;
+      }
+      #isstopped {
+          display:none;
+      }
+      #ispaused {
+          display:none;
       }
 
       #edit {
@@ -63,10 +77,11 @@
       }
 
       #playing { 
+          clear: both;
           background-color: rgba( 243,243,200,0.5);
           margin:4px;
-          font-size:11px;
-          min-height:25px;
+          font-size:20px;
+          min-height:20px;
           padding:3px;
           border-radius:5px;
       }
@@ -77,18 +92,19 @@
 
       jQuery(document).ready( function() {
           $ = jQuery;
-
+      
 
           function play(file) {
+              $('#stop').show();
               $.get("/play", {filename:file}, function (data) {
-                  var names = data.playing.split('/');
-//                  jQuery('#playing').html(names[0]+': ' + names[1].match(/.*?(?=-\S)/));
-                    jQuery('#playing').html( names[1].match(/.*?(?=-\S)/));
+//                  alert(JSON.stringify(data));
+                  jQuery('#playing').text(data.playing);
               }
-              , "json");
+                    , "json");
           }
-
+          
           function listVideos(videoListing,element) {
+              $(element).empty();
               videoListing.forEach( function (directory) {
                   $(element).append('<div class="addfile" dir="' + directory.directory + '">+</div><div class="header">' + directory.directory + '</div>');
                   var category = $('<div class="list"></div>').appendTo($(element));
@@ -97,9 +113,23 @@
 	              category.append("<div file=\"" + directory.directory +'/' +video + "\">" + videoTitle + "</div>");
                   })
               });
+              $(element).append('<div class="addcategory" >Add category</div>');
               $('.list').click( function(e) {
+                  $(e.srcElement).css("backgroundColor","#cfc");
+                  setTimeout(function(){$(e.srcElement).css("backgroundColor","white")},500);
                   play($(e.srcElement).attr("file"));
               });
+
+              $('.addfile').click( function(e) {
+                  var directory = $(e.srcElement).attr("dir");
+                  var youtubeurl = prompt('Enter URL to add to ' + directory);
+                  addVideo(youtubeurl,directory);
+              });
+              $('.addcategory').click( function(e) { 
+                  var categoryName = prompt('Enter name of new category');
+                  addCategory(categoryName);
+              });
+
 	  }          
 
           function getListing() {
@@ -109,22 +139,73 @@
                   }, "json");
           }
 
-	  getListing();
+          function addVideo(url, directory) {
+              jQuery('#playing').html( 'Downloading: '+url);
+              $.get("/add", {url:url, directory:directory},
+                  function (data) { 
+                      jQuery('#playing').html( 'Downloaded: '+url);
+                      getListing();
+                  }, "json");
+          }
+
+          function addCategory(name) {
+              $.get("/addcategory", {name:name},
+                  function (data) { 
+                      jQuery('#playing').html( 'Category ' + name + ' added.');
+                      getListing();
+                  }, "json");
+          }
+
+     	  getListing();
 
            $('#stop').click( function(e) {
-                  play("stop");
+                  $('.ispaused').hide();
+                  $('.isplaying').hide();
+                  $('.isstopped').show();
+                  play("<stop>");
                   jQuery('#playing').html("");
            });
 
-/*           function scrollDiv(element) {
+
+           $('#pause').click( function(e) {
+                  $('.ispaused').show();
+                  $('.isplaying').hide();
+                  $('.isstopped').hide();
+                  play("<pause>");
+           });
+
+
+           $('#rewind').click( function(e) {
+                  play("<rewind>");
+           });
+
+           $('#backward').click( function(e) {
+                  play("<backward>");
+           });
+
+           $('#forward').click( function(e) {
+                  play("<forward>");
+           });
+
+           $('#louder').click( function(e) {
+                  play("<louder>");
+           });
+
+           $('#quieter').click( function(e) {
+                  play("<quieter>");
+           });
+
+
+
+           function scrollDiv(element) {
                element= '#playing';
-               $(element).css("left", $(element).css("left")-1);
-               if ($(element).css("left") < -200) {
-                  $(element).css("left", 0) 
+               $(element).css("scrollLeft", $(element).css("scrollLeft")-1);
+               if ($(element).css("scrollLeft") < -200) {
+                  $(element).css("scrollLeft", 0) 
                }
            }
            setInterval(scrollDiv,200);
-*/
+
 
 	});
 
@@ -132,7 +213,17 @@
     </script>
   </head>
   <body>
-    <div id='np'><div id="stop">Stop</div><div id="edit">Edit</div><div id='playing'> </div></div>
+    <div id='np'>
+      <div class="isplaying" id="stop">Stop</div>
+      <div class="isplaying"  id="pause">Pause</div>
+      <div id="rewind">Rewind</div>
+      <div id="forward">Forward</div>
+      <div class="ispaused" id="resume">Resume</div>
+      <div id="louder">+</div>
+      <div id="quieter">-</div>
+      <div id="edit">Edit</div>
+      <div id='playing'> </div>
+    </div>
     <div id='npshadow'></div>
     <div id="videos"></div>
   </body>
