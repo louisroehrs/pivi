@@ -2,7 +2,8 @@ DEBUG=true;
 HOST = null; // localhost
 PORT = 9663;
 
-VIDEODATADIRECTORY='/Users/lroehrs/dev/pivi/pividata/';
+VIDEODATADIRECTORY='/home/pi/dev/pivi/pividata/';
+// VIDEODATADIRECTORY='/Users/lroehrs/dev/pivi/pividata/';
 
 // when the daemon started
 var starttime = (new Date()).getTime();
@@ -118,6 +119,7 @@ fu.get("/play", function (req, res) {
 	omx.quit();
 	omx.start(VIDEODATADIRECTORY + filename);
 	playerstate = "Playing";
+	console.log("================"+filename);
         var names = filename.split('/');
 	console.log(names);
         filename = names[1].match(/.*?(?=-\S)/)[0];
