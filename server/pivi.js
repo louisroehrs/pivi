@@ -2,8 +2,8 @@ DEBUG=true;
 HOST = null; // localhost
 PORT = 9663;
 
-VIDEODATADIRECTORY='/home/pi/dev/pivi/pividata/';
-// VIDEODATADIRECTORY='/Users/lroehrs/dev/pivi/pividata/';
+// VIDEODATADIRECTORY='/home/pi/dev/pivi/pividata/';
+VIDEODATADIRECTORY='/Users/lroehrs/dev/pivi/pividata/';
 
 // when the daemon started
 var starttime = (new Date()).getTime();
@@ -54,6 +54,7 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 // we do have a data handler, so override for the static files
 fu.get("/",fu.staticHandler("../client/html/pivi.html"));
 fu.get("/js/jquery-1.6.2.js",fu.staticHandler("../client/js/jquery-1.6.2.js"));
+fu.get("/js/jquery-3.4.1.js",fu.staticHandler("../client/js/jquery-3.4.1.js"));
 fu.get("/js/jquery-ui-1.11.4/jquery.js",fu.staticHandler("../client/js/jquery-ui-1.11.4/jquery.js"));
 fu.get("/fonts/okuda/Okuda.otf",fu.staticHandler("../client/fonts/okuda/Okuda.otf"));
 
