@@ -34,13 +34,15 @@ pivi.getListing = function() {
     var fileDirectories = fs.readdirSync(VIDEODATADIRECTORY);
 
     fileDirectories.forEach(function (entry) {
-	var directory = { directory : entry};
-	var files = fs.readdirSync(VIDEODATADIRECTORY  + entry);
-	directory.files = new Array();
-	files.forEach(function (file) {
-	    directory.files.push(file);
-	});
-	listing.push (directory);
+	if (entry != '.DS_Store') {
+	    var directory = { directory : entry};
+	    var files = fs.readdirSync(VIDEODATADIRECTORY  + entry);
+	    directory.files = new Array();
+	    files.forEach(function (file) {
+		directory.files.push(file);
+	    });
+	    listing.push (directory);
+	}
     });
     
     return listing;
@@ -52,6 +54,7 @@ fu.listen(Number(process.env.PORT || PORT), HOST);
 fu.get("/",fu.staticHandler("../client/html/pivi.html"));
 fu.get("/js/jquery-1.6.2.js",fu.staticHandler("../client/js/jquery-1.6.2.js"));
 fu.get("/js/jquery-ui-1.11.4/jquery.js",fu.staticHandler("../client/js/jquery-ui-1.11.4/jquery.js"));
+fu.get("/fonts/okuda/Okuda.otf",fu.staticHandler("../client/fonts/okuda/Okuda.otf"));
 
 fu.get("/dir", function (req, res) {
     var listing = pivi.getListing();
