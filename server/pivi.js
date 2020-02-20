@@ -108,10 +108,10 @@ fu.get("/play", function (req, res) {
 	omx.forward();
 	filename = nowplaying;
     }  else if (filename == '<louder>') {
-	omx.louder();
+	omx.sendKey('+');
 	filename = nowplaying;
     }  else if (filename == '<quieter>') {
-	omx.quieter();
+	omx.sendKey('-');
 	filename = nowplaying;
     }
 
