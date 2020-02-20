@@ -290,12 +290,18 @@
 
               $('.addfile').click( function(e) {
                   var directory = $(e.srcElement).attr("dir");
-                  var youtubeurl = prompt('Enter URL to add to ' + directory);
-                  addVideo(youtubeurl,directory);
+                  var youtubeurl = prompt('Enter video URL to add to ' + directory);
+		  if (youtubeurl != null) {
+                      addVideo(youtubeurl,directory);
+		  }
               });
               $('.addcategory').click( function(e) { 
-                  var categoryName = prompt('Enter name of new category');
-                  addCategory(categoryName);
+                  var categoryName = prompt('Enter name of new group');
+		  if (categoryName != null) {
+                      addCategory(categoryName);
+		  }
+
+
               });
 	  }	      
 	  
@@ -373,6 +379,13 @@
               sendomx("<pause>");
           });
 	  
+          $('#resume').click( function(e) {
+              $('.ispaused').hide();
+              $('.isplaying').show();
+              $('.isstopped').show();
+              sendomx("<pause>");
+          });
+	  
 	  
           $('#rewind').click( function(e) {
               play("<rewind>");
@@ -415,7 +428,7 @@
     <div class='lefter'></div><div class='headerblack' id="playing"> now playing....</div>
 <!--    <div class="headerbutton">EDIT</div>     <div class="gap"></div> -->
     <!--    <div class="headerbutton" id="rewind">Rewind</div><div class="gap"></div>     -->
-    <div class="headerbutton addcategory" >Add category</div><div class="gap"></div>
+    <div class="headerbutton addcategory" >NewGroup</div><div class="gap"></div>
 
     <div class="headerbutton isplaying"  id="pause">Pause</div><div class="gap isplaying"></div>
     <div class="headerbutton isplaying" id="stop">STOP</div><div class="gap isplaying"></div>
