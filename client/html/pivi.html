@@ -300,8 +300,6 @@
 		  if (categoryName != null) {
                       addCategory(categoryName);
 		  }
-
-
               });
 	  }	      
 	  
@@ -312,8 +310,10 @@
 		  $(element).append('<div class="headerbutton" dir="' + directory.directory + '">ADD</div><div class="gap"></div><div class="header">' + directory.directory + '</div>');
                   var category = $('<div class="list"></div>').appendTo($(element));
                   directory.files.forEach( function(video) {
-                      videoTitle = video.match(/.*?(?=-\S)/);
-	              category.append("<div class='lefter'></div><div class='item' file=\"" + directory.directory +'/' +video + "\">" + videoTitle + "</div>");
+		      videoTitle = video.match(/.*?(?=-\S)/);
+		      downloading = video.match(/.*[.part]$/);
+		      
+	              category.append("<div class='lefter'></div><div class='item' file=\"" + directory.directory +'/' +video + "\">" + videoTitle + downloading + "</div>");
                   })
 		  $(element).append('<div class="footer"></div>');
 		  $(element).append('<div>');
@@ -340,9 +340,13 @@
 
           function addCategory(name) {
               $.get("/addcategory", {name:name},
-                  function (data) { 
-                      jQuery('#playing').html( 'Category ' + name + ' added.');
-                      getListing();
+		    function (data) {
+			jQuery('#playing').html( data.name);
+			if (data.status == 200) {
+			    getListing();
+			} else {
+			    jQuery('#playing').html( data.name);
+			}
                   }, "json");
           }
 
@@ -425,14 +429,14 @@
     </script>
   </head>
   <body>
-    <div class='lefter'></div><div class='headerblack' id="playing"> now playing....</div>
+    <div class='lefter'></div><div class='headerblack' id="playing">make a selection</div>
 <!--    <div class="headerbutton">EDIT</div>     <div class="gap"></div> -->
     <!--    <div class="headerbutton" id="rewind">Rewind</div><div class="gap"></div>     -->
     <div class="headerbutton addcategory" >NewGroup</div><div class="gap"></div>
 
     <div class="headerbutton isplaying"  id="pause">Pause</div><div class="gap isplaying"></div>
     <div class="headerbutton isplaying" id="stop">STOP</div><div class="gap isplaying"></div>
-<!--     <div class="headerbutton" id="forward">Forward</div><div class="gap"></div> -->
+
     <div class="headerbutton ispaused" id="resume">Resume</div><div class="gap ispaused"></div>
     <div class="headerbutton" id="louder">+</div><div class="gap"></div>
     <div class="headerbutton" id="quieter">-</div><div class="gap"></div>

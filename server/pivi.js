@@ -2,8 +2,8 @@ DEBUG=true;
 HOST = null; // localhost
 PORT = 9663;
 
-// VIDEODATADIRECTORY='/home/pi/dev/pivi/pividata/';
-VIDEODATADIRECTORY='/Users/lroehrs/dev/pivi/pividata/';
+VIDEODATADIRECTORY='/home/pi/dev/pivi/pividata/';
+//VIDEODATADIRECTORY='/Users/lroehrs/dev/pivi/pividata/';
 
 // when the daemon started
 var starttime = (new Date()).getTime();
@@ -77,6 +77,17 @@ fu.get("/add", function(req,res) {
 			 res.simpleJSON(200, pivi.getListing());
 		     }
 		 });
+});
+
+
+fu.get("/addcategory", function(req,res) {
+    console.log("New Category: ",req.url);
+    var name = qs.parse(url.parse(req.url).query).name;
+    fs.mkdir(VIDEODATADIRECTORY + name, (err) => {
+	if (err) res.simpleJSON(500, { "status": 500, "message": "Could not create group " + name});
+	else res.simpleJSON(200, { "status" : 200, "message" : "Category " + name + ' added.'})
+    });
+	    
 });
 
 
