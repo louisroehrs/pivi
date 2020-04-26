@@ -67,7 +67,7 @@ fu.get("/add", function(req,res) {
     console.log("DL: ",req.url);
     var myurl = qs.parse(url.parse(req.url).query).url;
     var dir =  qs.parse(url.parse(req.url).query).directory;
-    child = exec("youtube-dl -o '" + VIDEODATADIRECTORY + dir +"/%(title)s-%(id)s.%(ext)s' "  + myurl,
+    child = exec("youtube-dl -f 'best' -o '" + VIDEODATADIRECTORY + dir +"/%(title)s^%(id)s.%(ext)s' "  + myurl,
 		 function (error, stdout, stderr) {
 		     console.log('stdout: ' + stdout);
 		     console.log('stderr: ' + stderr);
@@ -129,12 +129,13 @@ fu.get("/play", function (req, res) {
     else  // play the file
     { 
 	omx.quit();
+	
 	omx.start(VIDEODATADIRECTORY + filename);
 	playerstate = "Playing";
 	console.log("================"+filename);
         var names = filename.split('/');
 	console.log(names);
-        filename = names[1].match(/.*?(?=-\S)/)[0];
+        filename = names[1].match(/.*?(?=\^)/)[0];
 	console.log(filename);
 	nowplaying = filename;
     }

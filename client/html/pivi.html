@@ -273,7 +273,7 @@
 	      var categoryGC = $('<div class="videocategory"></div>').appendTo($(element));
 	      categoryGC.append('<div class="gridheader">' + directory.directory + '</div><div class="gridheaderbutton addfile" dir="' + directory.directory + '">ADD</div>');
               directory.files.forEach( function(video) {
-                  videoTitle = video.match(/.*?(?=-\S)/);
+                  videoTitle = video.match(/.*(?=\^)/);
 	          categoryGC.append("<div class='gridlefter'></div><div class='griditem' file=\"" + directory.directory +'/' +video + "\">" + videoTitle + "</div>");
                   })
 	      categoryGC.append('<div class="gridfooter"></div>');
@@ -310,7 +310,7 @@
 		  $(element).append('<div class="headerbutton" dir="' + directory.directory + '">ADD</div><div class="gap"></div><div class="header">' + directory.directory + '</div>');
                   var category = $('<div class="list"></div>').appendTo($(element));
                   directory.files.forEach( function(video) {
-		      videoTitle = video.match(/.*?(?=-\S)/);
+		      videoTitle = video.match(/.*?(?=^\S)/);
 		      downloading = video.match(/.*[.part]$/);
 		      
 	              category.append("<div class='lefter'></div><div class='item' file=\"" + directory.directory +'/' +video + "\">" + videoTitle + downloading + "</div>");
